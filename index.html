@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>老友鬼鬼 - Welcome | Ghold's Life Version</title><meta name="author" content="Ghold Lo"><meta name="copyright" content="Ghold Lo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>老友鬼鬼 - Welcome | Ghold's Life Version</title><meta name="author" content="Ghold Lo"><meta name="copyright" content="Ghold Lo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
 <meta property="og:title" content="老友鬼鬼">
 <meta property="og:url" content="http://laojiahao.cn/index.html">
 <meta property="og:site_name" content="老友鬼鬼">
@@ -6,16 +6,105 @@
 <meta property="og:image" content="http://laojiahao.cn/img/Ghold_2.jpg">
 <meta property="article:author" content="Ghold Lo">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://laojiahao.cn/img/Ghold_2.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://laojiahao.cn/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="http://laojiahao.cn/img/Ghold_2.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://laojiahao.cn/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
   localSearch: undefined,
   translate: undefined,
-  noticeOutdate: undefined,
-  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
   copy: {
     success: '复制成功',
-    error: '复制错误',
+    error: '复制失败',
     noSupport: '浏览器不支持'
   },
   relativeDate: {
@@ -23,7 +112,7 @@
     post: false
   },
   runtime: '',
-  date_suffix: {
+  dateSuffix: {
     just: '刚刚',
     min: '分钟前',
     hour: '小时前',
@@ -31,178 +120,161 @@
     month: '个月前'
   },
   copyright: undefined,
-  lightbox: 'fancybox',
+  lightbox: 'null',
   Snackbar: undefined,
-  source: {
-    justifiedGallery: {
-      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
-      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
-    }
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
   },
   isPhotoFigcaption: false,
-  islazyload: false,
-  isAnchor: false
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
   title: '老友鬼鬼',
-  isPost: false,
-  isHome: true,
   isHighlightShrink: false,
   isToc: false,
-  postUpdate: '2025-05-17 16:34:18'
-}</script><noscript><style type="text/css">
-  #nav {
-    opacity: 1
-  }
-  .justified-gallery img {
-    opacity: 1
-  }
-
-  #recent-posts time,
-  #post-meta time {
-    display: inline !important
-  }
-</style></noscript><script>(win=>{
-    win.saveToLocal = {
-      set: function setWithExpiry(key, value, ttl) {
-        if (ttl === 0) return
-        const now = new Date()
-        const expiryDay = ttl * 86400000
-        const item = {
-          value: value,
-          expiry: now.getTime() + expiryDay,
-        }
-        localStorage.setItem(key, JSON.stringify(item))
-      },
-
-      get: function getWithExpiry(key) {
-        const itemStr = localStorage.getItem(key)
-
-        if (!itemStr) {
-          return undefined
-        }
-        const item = JSON.parse(itemStr)
-        const now = new Date()
-
-        if (now.getTime() > item.expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return item.value
-      }
-    }
-  
-    win.getScript = url => new Promise((resolve, reject) => {
-      const script = document.createElement('script')
-      script.src = url
-      script.async = true
-      script.onerror = reject
-      script.onload = script.onreadystatechange = function() {
-        const loadState = this.readyState
-        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
-        script.onload = script.onreadystatechange = null
-        resolve()
-      }
-      document.head.appendChild(script)
-    })
-  
-      win.activateDarkMode = function () {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      win.activateLightMode = function () {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
-      const t = saveToLocal.get('theme')
-    
-          if (t === 'dark') activateDarkMode()
-          else if (t === 'light') activateLightMode()
-        
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        if (asideStatus === 'hide') {
-          document.documentElement.classList.add('hide-aside')
-        } else {
-          document.documentElement.classList.remove('hide-aside')
-        }
-      }
-    
-    const detectApple = () => {
-      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
-        document.documentElement.classList.add('apple')
-      }
-    }
-    detectApple()
-    })(window)</script><meta name="generator" content="Hexo 6.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/Ghold_2.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">35</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('/img/life_blog_background.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">老友鬼鬼</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">老友鬼鬼</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴"><img class="post_bg" src="https://picsum.photos/1024/768" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="也无风雨也无晴"></a></div><div class="recent-post-info"><a class="article-title" href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴">也无风雨也无晴</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-01-20T06:37:00.000Z" title="发表于 2024-01-20 14:37:00">2024-01-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">难忘的2022年，自己是处于人生重大经历进程中的，而今年则特别平静。这样的平静，犹如暴风雨后，废墟中的那一抹彩虹，五光十色又满目疮痍。暴风雨破坏了我在大城市中十年的漂泊独立生活，促使我做出了很多抉择。这样的破坏是人类成长过程中必须经历的，但同时，很多当时的决定不是最优的。但「活着总是有办法的」，我认为这是一句真理。既然2022年的暴风雨来得猛烈，就让2023年来抚平就好。
-迎接2023年的是，一场平静的月子中心之旅和公司对2023年的发展规划介绍。我在公司总结中表达了自己对2022年工作的不满意及对2023年公司发展前景的担心。对自己的不满意，当然是因为这场暴风雨的关系，谁会在暴风雨中还关心自己的工作？而对公司发展前景的担心，更多是对自己能否保住这份工作的担心。因为踏入2023年的我，是负债累累的——银行的几笔分期、房贷和借岳母的首期款。最起码，目前这份工作是不能丢的。工作会不会丢，除了自己的工作状态，还有就是老板会不会跑路。但公司还是在年前做出了2023年的规划，给员工打了一个强心针。从结果来说，公司在2023年减少了工程师的招聘，大部分是在拓宽商务，项目开展应该是稳定的，并不需要员 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022"><img class="post_bg" src="/img/2022_12_31/see_you_fuck_2022_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="告别紧张刺激2022"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022">告别紧张刺激2022</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-12-31T15:00:00.000Z" title="发表于 2022-12-31 23:00:00">2022-12-31</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">2022年是总结的一年。中国社会在总结，每个身处其中的个人也在总结。2022年，注定是我人生中重要的一年。简单来说，今年完成了人生的两件大事：一是买下自己的第一套商品房，二是成为了爸爸。
-买房子这件事，早在2016年就开始计划了。虽然自问数学学得还不错，但对于投资却是一窍不通。经济学原理是否需要别人教不清楚，但想了想关键还是本钱少。直到2020年，我一直会把买房子的计划放在每天的总结中，但房价的涨速实在吓人。一旦错过了最好的时间，投资会慢慢变成保固。2022年的买房计划已经不是什么炒楼、赚大钱之类的想法，而是一个接近中年的男人，成家的理由。
-我和老婆的婚姻开始于疫情爆发的开端——2020年1月20日。突如其来的疫情，为我们这对小夫妻带来了不少的困扰。新婚后分隔两地隔离、不断延期的婚礼，礼成后不得不先暂停一下生育的计划，因为不希望疫情给下一代带来太多的伤害。直到今年初，想了想过去33年的人生，回忆起朋友说的话：再晚点，孩子大学毕业你都退休了吧，备孕推上了日程。
-人民群众在中国政府的严密保护下，熬过了疫情最严重的2年，但强大的压力下，国内充斥着众多对政府过严防控的质疑。表哥曾跟我说，他的工 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华"><img class="post_bg" src="/img/2020_01_24/fire-year_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="躁动年华"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华">躁动年华</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-01-24T02:15:00.000Z" title="发表于 2020-01-24 10:15:00">2020-01-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">决心动笔的时候，2020年已经过去了24天。今年相比去年，倒不是太过于忙碌，而是心中总有躁动无法平息。我总希望在春节前的这些天，能够平复这些份躁动。
-感情躁动，对的，我结婚了。其实就在去年的总结里，我已经知道，她是我命中之人。我们按计划去了次旅游。我相信，在陌生的地方，可以看到对方的短处，所以我们上山（玉龙雪山）下海（洱海）。几天的旅程，我知道她是柔弱的，还欠缺点主见，所以我要是与她一辈子，那必须是我来保护她。那时，我结婚心理准备就已经做好了。与大多数求婚不同，我提醒了她，说我将会向她求婚。是的，她也是个危机感很强的女孩，所以我决定可以少一些惊喜，多一点安全感，也让她做下心理准备。于是，我的求婚成功了，并在自己31岁生日那天完成了自己的一个终生大事。
-工作躁动，2019年确实有点“累”了。2019年的上半年，我是带着年前总结的节奏开展的工作。为了提高公司数据采集的开发效率，我全身心投入到Flink数据采集框架的设计和开发里。因为只有一人开发，整个周期达到四个月之长，期间还出现了开发临时方案的工作。然而，令我没有想到的是，我刚开发完成的技术，还没进入的技术审查流程，就要应用在生产环境中。 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开"><img class="post_bg" src="/img/2019_02_04/wait-to-bloom_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="待繁花初开"></a></div><div class="recent-post-info"><a class="article-title" href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开">待繁花初开</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2019-02-04T02:15:00.000Z" title="发表于 2019-02-04 10:15:00">2019-02-04</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">直到今天年三十，我才有写下这篇总结的动力，原因是去年实在有点忙。总结来说就是，工作的忙碌、恋爱的忙碌和手游的肝。
-回望2018年初，我写下了《无法言表的心情》，现在看了下，还能回味起当时忐忑的心情。被拉去做跟数据分析没关系的产测工具、公司层面的数据边界不合理、公司在数据平台的产品并不明确，拥有一系列不如意开始的2018年，终于在翻天覆地的变化中过去了。
-是的，我都有点不相信，即使在年尾想总结的时候，如果不是打开编辑器时看到那篇吐苦水，我还真不会记起有那么一回事。2018年，我顶住了压力，撑起了一个数据平台。无疑，2018年，自从那次在CTO面前，与基础平台开发吵架以后，一切都在变化。从产品经理、前端、测试、后端都被独立为部门，专心做数据平台产品的设计。从CTO的层级，也开始把基础平台内针对数据同步的应用，逐步转交到数据平台管理。直至2018年底，数据平台已经发布十多个版本，并能作为上线产品销售出去。年中时候，公司接了几个项目，其中需要输出不同程度的定制化数据集合，就在这个忙碌的时期，自己对物联数据有了一些新的认知、看法和目标。
-2018针对查询方面做了很多工作，而且在数据采集方面已经开 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情"><img class="post_bg" src="/img/2018_02_18/chaos_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无法言表的心情"></a></div><div class="recent-post-info"><a class="article-title" href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情">无法言表的心情</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2018-02-18T14:45:00.000Z" title="发表于 2018-02-18 22:45:00">2018-02-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%83%85%E6%84%9F/">情感</a></span></div><div class="content">mhw明明出了快一个月，心情还是无法让自己肝起来。可能是在多年后的现在，我明白到，时间真的不等人、你已经不年轻之类的话，并不仅仅是肥皂剧里危言耸听的撕逼，而是侵蚀那份自以为是悠然自得的心态。
-工作和学习上的不太顺利，应该是此刻心情低落的最大原因。一个人每年都有将近1&#x2F;3的时间处于工作与学习中，这也是追求梦想的道路。比较着年轻一辈、大公司与自己在小公司里获得的资薪，无论如何都无法平静。当自己越发的激情爆炸的时候，有人一盘冷水泼下，让我清醒了几分。我大概被兴奋的2017蒙蔽了脑筋，直到那么一次尴尬的讨论和年会，以及之后我们数据组的表现，我只能深深让自己萎缩起来。他们让我想起去年初“被骗”的经历。
-我无法把控的东西太多了。作为一个以事业为重的人，在迈向目标的路上，越多的控制，就能得到越高的效率。但，当我意识到，我能把控的实在是太少了。在尴尬的同僚关系下，我已经选择谦让、自嘲、苦笑着让出那么一步。但这步一让，也意味着我把作为数据分析师最重要的东西让了出去——在一切分析面前，数据才是王道。放弃了数据，分析的工作只会像纸上谈兵，说那个分析方法对说这个分析结果好，但没有结合数据，一切都是空 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2017/03/26/2017-03-26-something-is-changed/" title="总之是变了"><img class="post_bg" src="/img/2017_03_26/something_is_changed_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="总之是变了"></a></div><div class="recent-post-info"><a class="article-title" href="/2017/03/26/2017-03-26-something-is-changed/" title="总之是变了">总之是变了</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2017-03-26T05:26:00.000Z" title="发表于 2017-03-26 13:26:00">2017-03-26</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B4%BB%E5%8A%A8/">活动</a></span></div><div class="content">昨晚又刷了一次五月天的演唱会，这是从7年前意外入坑后第三次刷他们的演唱会。在朋友圈上久违地发了一发动态，当然是收到了朋友们的祝福。不过，最为感触的是，@iROCKRUNNY的吐槽。渠小哥在7年前带我去刷Mayday演唱会，从北三环骑自行车到东三环工体的场景还记忆犹新。小哥说他不会去听他们的演唱会了，Mayday的新歌把他们毁了。圈子另一边的我先是愕然了一下，很快我就进入了思考模式。
-在我心目中，渠小哥是个很有原则的人，他的人生也是我所向往的。自由的选择深造，欧洲的学习与游历，各种各样的音乐和摄影爱好。他说的不喜欢，肯定有他的道理。我只能说一句，五月天的确是变了。5年中他们没有发过专辑，五年之后的他们在诉说他们的自传。嗯，他们在总结。说句不好听的是，他们在卖老了。但我只会说，我会买这个老。原因很简单，他们在我最无助的时候带给我感动。
-总之他们是变了，但我仍然会喜欢，因为我也在变。不忘初心的渠小哥会在喜欢的Rock上继续前行，而我则是在泥泞中翻滚，在生活和生存之间折腾。我觉得我会如大多数的凡人一样，终日奔波苦，一刻不得闲。久而久之，发现很多初心爱好消失了很多。譬如动画，小学开始的爱好，在几 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2017/03/05/2017-03-05-hard-to-choose/" title="选择困难症"><img class="post_bg" src="/img/2017_03_05/hard_to_choose_1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="选择困难症"></a></div><div class="recent-post-info"><a class="article-title" href="/2017/03/05/2017-03-05-hard-to-choose/" title="选择困难症">选择困难症</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2017-03-05T11:58:00.000Z" title="发表于 2017-03-05 19:58:00">2017-03-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E4%BD%9C/">工作</a></span></div><div class="content">在选择面前，我更喜欢年少时的我：果断、勇敢。在很早的时候，我就被教会：天下是没有后悔药吃的。但每次作出选择后，无论结果如何，我都能找到一个完说的理由：这样的选择也不错吧。直到不久前，前前公司的一场闹剧，开始了自己对人生的怀疑。
-到目前为止，我只服务过3家公司，顺丰科技、集货优运和舜飞科技。从顺丰出来回到广州的经历是当时一个无奈的决定。我很喜欢那份工作，但，同时也对自己的待遇感到悲观。远离深圳的好友，独自来到广州，看似转业加薪，实则是无奈的选择。碌碌庸庸在集货优运度过了1年多，经历了创业合伙人的资产纠纷，虽然口声说与产品技术无关，但创业失败的结果又岂能不负上责任呢。匆匆十月得到创业失败的消息，十一月就拿到两个offer了。列了十项比较，并最终选择了舜飞科技。当时自己列的几行优势是这样的：
-
-数据环境一流，具有挑战性
-自主选择开发方案
-工作内容：语言不限，开发新的平台
-长远：高并发，分布式，数据分析，前后端全栈
-
-可是进去三个月后，发现以上没有一项能达到预期。原因很简单，项目中止了。从那个项目中止后，我突然发现自己处于一个十分尴尬的位置——前端部的后端工程师，再加上前端部与后端部不怎么和谐 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2017/01/02/2017-01-02-to-2016/" title="在2016并木有改变世界，当然2017也不会"><img class="post_bg" src="/img/2017_01_02/to_2016_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="在2016并木有改变世界，当然2017也不会"></a></div><div class="recent-post-info"><a class="article-title" href="/2017/01/02/2017-01-02-to-2016/" title="在2016并木有改变世界，当然2017也不会">在2016并木有改变世界，当然2017也不会</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2017-01-01T16:43:00.000Z" title="发表于 2017-01-02 00:43:00">2017-01-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">据说标题长一点牛x点，看的人会比较多。实际上跟改变世界没关系，就是讲讲故事。
-回想20162016年并不是过得那么快，或许是变故太多的缘故，让自己不由得去尝试一些新的事、新的思想和新的动作。回想发现，在2016，我基本没有写文章了，也基本不去看动画了，而是更多地玩游戏了。比起追求什么，我更像是在等待某些事情的发生。等待总比追求难熬就是了。
-不想伤害别人就只能伤害自己？2016初，被上家公司放了一个月无薪假。这家公司叫运到哪，而很不幸，现在已经倒闭了。我并不是一个幸灾乐祸的人，也无暇去为这些事情担忧。老板创业失败也好，欠薪也罢，该来的还是会来，该还的还是要还。
-这次的无薪假，我已经有出走的念头。但终归敌不过良心，最后还是留下来了。我是一直相信着这个技术产品团队的，只不过，我对公司的商业套路并不看好。我不懂产品，但我得懂数据和技术。当你手中的平台日活不过300，喊着靠流水赚钱的时候，你还有心情追求什么进步？所以你得等待，等待这套路能套出用户存款中的钱，等待运营实现承诺，等待瓶颈被冲破。
-有人会说，你人怎么会这样，太不思进取了。是的，这大半年的，都是这种状态。即使我在这家公司有着期权，即使大 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2016/01/01/2016-01-01-to-2015/" title="致2015"><img class="post_bg" src="/img/2016_01_01/to_2015_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="致2015"></a></div><div class="recent-post-info"><a class="article-title" href="/2016/01/01/2016-01-01-to-2015/" title="致2015">致2015</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2015-12-31T18:34:00.000Z" title="发表于 2016-01-01 02:34:00">2016-01-01</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">一如即往，每年这个时候都会给过去一年的自己写篇总结。过去是验证知识、能力的明鉴，未来的憧憬则督促着来年不要成为咸鱼。今年我觉得自己有了新的突破，尽管可能在众人看来是微不足道的小事，但也是值得记录和回顾。
-工作－前半年今年的主旋律也是工作。自从4年前告别学生时代开始，基本工作日都在公司度过。中途都有yy过如何一劳永逸，发现要么路上捡到，要么就是投胎重来，所以还是算了，老老实实干活就好。
-今年与以往有所不同，因为我跳槽了。那么在顺丰科技的半年，我都做了什么？从去年的总结中应该看到过2015年的计划。如计划一样的进行着，基础数据平台在三个月的调研后，正式立项开发。算法由团队的两巨头给出，框架由团队的两大架构师给出，我则负责平台的主体算法开发，简单来说就是数据分析。虽说是基础数据平台（后来还起了个很霸气的名字），但直到我离开时，都是对一线的操作日志进行分析，据说是怕搞太大承受不了风险。
-平台架构采用了流行的开源流式计算技术和数据流压缩技术，从以前的工厂模式改为多线程异步分析模式，取消了关系型数据库，改用文件数据库加速分析读写。而我要解决的则是保证这种模式下的数据能有“正确“的分析结果。何为正确 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2015/09/26/2015-09-26-to-young/" title="致青春"><img class="post_bg" src="/img/2015_09_26/to_young_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="致青春"></a></div><div class="recent-post-info"><a class="article-title" href="/2015/09/26/2015-09-26-to-young/" title="致青春">致青春</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2015-09-25T17:18:00.000Z" title="发表于 2015-09-26 01:18:00">2015-09-26</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%83%85%E6%84%9F/">情感</a></span></div><div class="content">
-终于在朋友圈中，看到两位show的结婚证，在此先祝福一下。
-
-如果以70岁的生命来说，我已经过掉了三分之一的人生。再过几年，差不多就要开始而立之年。心怀的梦想还没实现，转眼间已被催促着完成各种各样的人生大事，变故如是，无法释怀。以致青春为引子，释放一下自己，也让自己的激情再燃。
-恋爱对于我来说，一直都是虚无缥缈的，嗯，实在难得。难在自己从来都是要求高，难在自己缺乏迈出的勇气，难在知难而退的自己。在感情方面，到现在为止，一直都没有改变。想想从初中开始，在家呆着的时间越来越少；到大学，飞到北京，说是在学习见识，倒不如说是在生命中启蒙，由迷茫到自知，再到积极面对。家的感觉若即若离，以至于毕业后也是到深圳发展，有种不想回家的感觉。
-青春中工作状态也是充满激情的。我不是学计算机的，但我一直梦想着在计算机或是IT领域有一技之长。但我的心是躁动的。与其说待在顺丰是入行的垫脚石，不如说我已经别无选择。数学专业无疑是只有读研、科研、出国等选择，但如我一样成绩不太理想的家伙，外加本来就是穷人，最终只能找个大哥介绍份稳定的工作。在此再次感谢世荣，没有他，我甚至连工作都木有。
-其实我也试过很多的校招。见多了 ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#content-inner">4</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/Ghold_2.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ghold Lo</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">35</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ghold"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到Ghold的生活博客</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴"><img src="https://picsum.photos/1024/768" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="也无风雨也无晴"/></a><div class="content"><a class="title" href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴">也无风雨也无晴</a><time datetime="2024-01-20T06:37:00.000Z" title="发表于 2024-01-20 14:37:00">2024-01-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022"><img src="/img/2022_12_31/see_you_fuck_2022_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="告别紧张刺激2022"/></a><div class="content"><a class="title" href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022">告别紧张刺激2022</a><time datetime="2022-12-31T15:00:00.000Z" title="发表于 2022-12-31 23:00:00">2022-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华"><img src="/img/2020_01_24/fire-year_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="躁动年华"/></a><div class="content"><a class="title" href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华">躁动年华</a><time datetime="2020-01-24T02:15:00.000Z" title="发表于 2020-01-24 10:15:00">2020-01-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开"><img src="/img/2019_02_04/wait-to-bloom_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="待繁花初开"/></a><div class="content"><a class="title" href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开">待繁花初开</a><time datetime="2019-02-04T02:15:00.000Z" title="发表于 2019-02-04 10:15:00">2019-02-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情"><img src="/img/2018_02_18/chaos_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无法言表的心情"/></a><div class="content"><a class="title" href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情">无法言表的心情</a><time datetime="2018-02-18T14:45:00.000Z" title="发表于 2018-02-18 22:45:00">2018-02-18</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/Ghold_2.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(/img/life_blog_background.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">老友鬼鬼</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间线</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">老友鬼鬼</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴"><img class="post-bg" src="https://picsum.photos/1024/768" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="也无风雨也无晴"></a></div><div class="recent-post-info"><a class="article-title" href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴">也无风雨也无晴</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-01-20T06:37:00.000Z" title="发表于 2024-01-20 14:37:00">2024-01-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">难忘的2022年，自己是处于人生重大经历进程中的，而今年则特别平静。这样的平静，犹如暴风雨后，废墟中的那一抹彩虹，五光十色又满目疮痍。暴风雨破坏了我在大城市中十年的漂泊独立生活，促使我做出了很多抉择。这样的破坏是人类成长过程中必须经历的，但同时，很多当时的决定不是最优的。但「活着总是有办法的」，我认为这是一句真理。既然2022年的暴风雨来得猛烈，就让2023年来抚平就好。...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022"><img class="post-bg" src="/img/2022_12_31/see_you_fuck_2022_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="告别紧张刺激2022"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022">告别紧张刺激2022</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-12-31T15:00:00.000Z" title="发表于 2022-12-31 23:00:00">2022-12-31</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">2022年是总结的一年。中国社会在总结，每个身处其中的个人也在总结。2022年，注定是我人生中重要的一年。简单来说，今年完成了人生的两件大事：一是买下自己的第一套商品房，二是成为了爸爸。...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华"><img class="post-bg" src="/img/2020_01_24/fire-year_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="躁动年华"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华">躁动年华</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-01-24T02:15:00.000Z" title="发表于 2020-01-24 10:15:00">2020-01-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">决心动笔的时候，2020年已经过去了24天。今年相比去年，倒不是太过于忙碌，而是心中总有躁动无法平息。我总希望在春节前的这些天，能够平复这些份躁动。...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开"><img class="post-bg" src="/img/2019_02_04/wait-to-bloom_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="待繁花初开"></a></div><div class="recent-post-info"><a class="article-title" href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开">待繁花初开</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2019-02-04T02:15:00.000Z" title="发表于 2019-02-04 10:15:00">2019-02-04</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">直到今天年三十，我才有写下这篇总结的动力，原因是去年实在有点忙。总结来说就是，工作的忙碌、恋爱的忙碌和手游的肝。 回望2018年初，我写下了《无法言表的心情》，现在看了下，还能回味起当时忐忑的心情。被拉去做跟数据分析没关系的产测工具、公司层面的数据边界不合理、公司在数据平台的产品并不明确，拥有一系列不如意开始的2018年，终于在翻天覆地的变化中过去了。...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情"><img class="post-bg" src="/img/2018_02_18/chaos_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无法言表的心情"></a></div><div class="recent-post-info"><a class="article-title" href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情">无法言表的心情</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2018-02-18T14:45:00.000Z" title="发表于 2018-02-18 22:45:00">2018-02-18</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%83%85%E6%84%9F/">情感</a></span></div><div class="content">mhw明明出了快一个月，心情还是无法让自己肝起来。可能是在多年后的现在，我明白到，时间真的不等人、你已经不年轻之类的话，并不仅仅是肥皂剧里危言耸听的撕逼，而是侵蚀那份自以为是悠然自得的心态。...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2017/03/26/2017-03-26-something-is-changed/" title="总之是变了"><img class="post-bg" src="/img/2017_03_26/something_is_changed_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="总之是变了"></a></div><div class="recent-post-info"><a class="article-title" href="/2017/03/26/2017-03-26-something-is-changed/" title="总之是变了">总之是变了</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2017-03-26T05:26:00.000Z" title="发表于 2017-03-26 13:26:00">2017-03-26</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B4%BB%E5%8A%A8/">活动</a></span></div><div class="content">昨晚又刷了一次五月天的演唱会，这是从7年前意外入坑后第三次刷他们的演唱会。在朋友圈上久违地发了一发动态，当然是收到了朋友们的祝福。不过，最为感触的是，@iROCKRUNNY的吐槽。渠小哥在7年前带我去刷Mayday演唱会，从北三环骑自行车到东三环工体的场景还记忆犹新。小哥说他不会去听他们的演唱会了，Mayday的新歌把他们毁了。圈子另一边的我先是愕然了一下，很快我就进入了思考模式。...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2017/03/05/2017-03-05-hard-to-choose/" title="选择困难症"><img class="post-bg" src="/img/2017_03_05/hard_to_choose_1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="选择困难症"></a></div><div class="recent-post-info"><a class="article-title" href="/2017/03/05/2017-03-05-hard-to-choose/" title="选择困难症">选择困难症</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2017-03-05T11:58:00.000Z" title="发表于 2017-03-05 19:58:00">2017-03-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E4%BD%9C/">工作</a></span></div><div class="content">在选择面前，我更喜欢年少时的我：果断、勇敢。在很早的时候，我就被教会：天下是没有后悔药吃的。但每次作出选择后，无论结果如何，我都能找到一个完说的理由：这样的选择也不错吧。直到不久前，前前公司的一场闹剧，开始了自己对人生的怀疑。...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2017/01/02/2017-01-02-to-2016/" title="在2016并木有改变世界，当然2017也不会"><img class="post-bg" src="/img/2017_01_02/to_2016_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="在2016并木有改变世界，当然2017也不会"></a></div><div class="recent-post-info"><a class="article-title" href="/2017/01/02/2017-01-02-to-2016/" title="在2016并木有改变世界，当然2017也不会">在2016并木有改变世界，当然2017也不会</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2017-01-01T16:43:00.000Z" title="发表于 2017-01-02 00:43:00">2017-01-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">据说标题长一点牛x点，看的人会比较多。实际上跟改变世界没关系，就是讲讲故事。 回想20162016年并不是过得那么快，或许是变故太多的缘故，让自己不由得去尝试一些新的事、新的思想和新的动作。回想发现，在2016，我基本没有写文章了，也基本不去看动画了，而是更多地玩游戏了。比起追求什么，我更像是在等待某些事情的发生。等待总比追求难熬就是了。...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/2016/01/01/2016-01-01-to-2015/" title="致2015"><img class="post-bg" src="/img/2016_01_01/to_2015_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="致2015"></a></div><div class="recent-post-info"><a class="article-title" href="/2016/01/01/2016-01-01-to-2015/" title="致2015">致2015</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2015-12-31T18:34:00.000Z" title="发表于 2016-01-01 02:34:00">2016-01-01</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%80%BB%E7%BB%93/">总结</a></span></div><div class="content">一如即往，每年这个时候都会给过去一年的自己写篇总结。过去是验证知识、能力的明鉴，未来的憧憬则督促着来年不要成为咸鱼。今年我觉得自己有了新的突破，尽管可能在众人看来是微不足道的小事，但也是值得记录和回顾。 工作－前半年今年的主旋律也是工作。自从4年前告别学生时代开始，基本工作日都在公司度过。中途都有yy过如何一劳永逸，发现要么路上捡到，要么就是投胎重来，所以还是算了，老老实实干活就好。...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/2015/09/26/2015-09-26-to-young/" title="致青春"><img class="post-bg" src="/img/2015_09_26/to_young_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="致青春"></a></div><div class="recent-post-info"><a class="article-title" href="/2015/09/26/2015-09-26-to-young/" title="致青春">致青春</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2015-09-25T17:18:00.000Z" title="发表于 2015-09-26 01:18:00">2015-09-26</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%83%85%E6%84%9F/">情感</a></span></div><div class="content">...</div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#content-inner">4</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/Ghold_2.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Ghold Lo</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ghold"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到Ghold的生活博客</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴"><img src="https://picsum.photos/1024/768" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="也无风雨也无晴"/></a><div class="content"><a class="title" href="/2024/01/20/2024-01-20-no_wind_rain_or_shine/" title="也无风雨也无晴">也无风雨也无晴</a><time datetime="2024-01-20T06:37:00.000Z" title="发表于 2024-01-20 14:37:00">2024-01-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022"><img src="/img/2022_12_31/see_you_fuck_2022_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="告别紧张刺激2022"/></a><div class="content"><a class="title" href="/2022/12/31/2022-12-31-see-you-fuck-2022/" title="告别紧张刺激2022">告别紧张刺激2022</a><time datetime="2022-12-31T15:00:00.000Z" title="发表于 2022-12-31 23:00:00">2022-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华"><img src="/img/2020_01_24/fire-year_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="躁动年华"/></a><div class="content"><a class="title" href="/2020/01/24/2020-01-24-fire-year/" title="躁动年华">躁动年华</a><time datetime="2020-01-24T02:15:00.000Z" title="发表于 2020-01-24 10:15:00">2020-01-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开"><img src="/img/2019_02_04/wait-to-bloom_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="待繁花初开"/></a><div class="content"><a class="title" href="/2019/02/04/2019-02-04-wait-to-bloom/" title="待繁花初开">待繁花初开</a><time datetime="2019-02-04T02:15:00.000Z" title="发表于 2019-02-04 10:15:00">2019-02-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情"><img src="/img/2018_02_18/chaos_1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无法言表的心情"/></a><div class="content"><a class="title" href="/2018/02/18/2018-02-18-chaos/" title="无法言表的心情">无法言表的心情</a><time datetime="2018-02-18T14:45:00.000Z" title="发表于 2018-02-18 22:45:00">2018-02-18</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
             <i class="fas fa-folder-open"></i>
             <span>分类</span>
             
-            </div>
-            <ul class="card-category-list" id="aside-cat-list">
-            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E4%BD%9C/"><span class="card-category-list-name">工作</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%80%BB%E7%BB%93/"><span class="card-category-list-name">总结</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%83%85%E6%84%9F/"><span class="card-category-list-name">情感</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B4%BB%E5%8A%A8/"><span class="card-category-list-name">活动</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="card-category-list-name">游戏</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="card-category-list-name">生活</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="card-category-list-name">随笔</span><span class="card-category-list-count">8</span></a></li>
-            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E4%BA%8B%E4%BB%B6/" style="font-size: 1.1em; color: #999">事件</a> <a href="/tags/%E4%BA%94%E6%9C%88%E5%A4%A9/" style="font-size: 1.1em; color: #999">五月天</a> <a href="/tags/%E5%9B%A2%E9%98%9F/" style="font-size: 1.26em; color: #999fa8">团队</a> <a href="/tags/%E5%A4%B1%E5%8E%BB/" style="font-size: 1.18em; color: #999ca1">失去</a> <a href="/tags/%E5%B9%B4%E5%BA%A6/" style="font-size: 1.5em; color: #99a9bf">年度</a> <a href="/tags/%E5%BE%92%E6%AD%A5/" style="font-size: 1.1em; color: #999">徒步</a> <a href="/tags/%E6%80%9D%E8%80%83/" style="font-size: 1.42em; color: #99a6b7">思考</a> <a href="/tags/%E6%80%AA%E7%89%A9%E7%8C%8E%E4%BA%BA/" style="font-size: 1.1em; color: #999">怪物猎人</a> <a href="/tags/%E6%83%85%E7%BB%AA%E5%8C%96/" style="font-size: 1.18em; color: #999ca1">情绪化</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 1.26em; color: #999fa8">日常</a> <a href="/tags/%E6%9C%8B%E5%8F%8B/" style="font-size: 1.1em; color: #999">朋友</a> <a href="/tags/%E7%BA%AA%E5%BF%B5/" style="font-size: 1.1em; color: #999">纪念</a> <a href="/tags/%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">编程</a> <a href="/tags/%E8%8A%82%E6%97%A5/" style="font-size: 1.34em; color: #99a3b0">节日</a> <a href="/tags/%E9%80%89%E6%8B%A9/" style="font-size: 1.1em; color: #999">选择</a> <a href="/tags/%E9%9D%92%E6%98%A5/" style="font-size: 1.18em; color: #999ca1">青春</a> <a href="/tags/%E9%BB%91%E9%A9%AC/" style="font-size: 1.1em; color: #999">黑马</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
-    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/01/"><span class="card-archive-list-date">一月 2024</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/12/"><span class="card-archive-list-date">十二月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/01/"><span class="card-archive-list-date">一月 2020</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2019/02/"><span class="card-archive-list-date">二月 2019</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2018/02/"><span class="card-archive-list-date">二月 2018</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2017/03/"><span class="card-archive-list-date">三月 2017</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2017/01/"><span class="card-archive-list-date">一月 2017</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2016/01/"><span class="card-archive-list-date">一月 2016</span><span class="card-archive-list-count">1</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">35</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-05-17T08:34:18.018Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Ghold Lo</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"><script>function subtitleType () {
-  if (true) { 
-    window.typed = new Typed("#subtitle", {
-      strings: ["虚心使人进步，骄傲使人落后"],
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%B7%A5%E4%BD%9C/"><span class="card-category-list-name">工作</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%80%BB%E7%BB%93/"><span class="card-category-list-name">总结</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%83%85%E6%84%9F/"><span class="card-category-list-name">情感</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B4%BB%E5%8A%A8/"><span class="card-category-list-name">活动</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%B8%B8%E6%88%8F/"><span class="card-category-list-name">游戏</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="card-category-list-name">生活</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E9%9A%8F%E7%AC%94/"><span class="card-category-list-name">随笔</span><span class="card-category-list-count">8</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E4%BA%94%E6%9C%88%E5%A4%A9/" style="font-size: 1.1em; color: #999">五月天</a> <a href="/tags/%E6%80%9D%E8%80%83/" style="font-size: 1.42em; color: #99a6b7">思考</a> <a href="/tags/%E6%97%A5%E5%B8%B8/" style="font-size: 1.26em; color: #999fa8">日常</a> <a href="/tags/%E6%9C%8B%E5%8F%8B/" style="font-size: 1.1em; color: #999">朋友</a> <a href="/tags/%E6%83%85%E7%BB%AA%E5%8C%96/" style="font-size: 1.26em; color: #999fa8">情绪化</a> <a href="/tags/%E5%BE%92%E6%AD%A5/" style="font-size: 1.1em; color: #999">徒步</a> <a href="/tags/%E9%9D%92%E6%98%A5/" style="font-size: 1.26em; color: #999fa8">青春</a> <a href="/tags/%E5%B9%B4%E5%BA%A6/" style="font-size: 1.5em; color: #99a9bf">年度</a> <a href="/tags/%E5%9B%A2%E9%98%9F/" style="font-size: 1.26em; color: #999fa8">团队</a> <a href="/tags/%E4%BA%8B%E4%BB%B6/" style="font-size: 1.1em; color: #999">事件</a> <a href="/tags/%E6%80%AA%E7%89%A9%E7%8C%8E%E4%BA%BA/" style="font-size: 1.1em; color: #999">怪物猎人</a> <a href="/tags/%E5%8B%87%E6%95%A2/" style="font-size: 1.1em; color: #999">勇敢</a> <a href="/tags/%E8%8A%82%E6%97%A5/" style="font-size: 1.34em; color: #99a3b0">节日</a> <a href="/tags/%E5%A4%B1%E5%8E%BB/" style="font-size: 1.18em; color: #999ca1">失去</a> <a href="/tags/%E9%80%89%E6%8B%A9/" style="font-size: 1.1em; color: #999">选择</a> <a href="/tags/%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">编程</a> <a href="/tags/%E9%BB%91%E9%A9%AC/" style="font-size: 1.1em; color: #999">黑马</a> <a href="/tags/%E7%BA%AA%E5%BF%B5/" style="font-size: 1.1em; color: #999">纪念</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/01/">
+            <span class="card-archive-list-date">
+              一月 2024
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2022/12/">
+            <span class="card-archive-list-date">
+              十二月 2022
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2020/01/">
+            <span class="card-archive-list-date">
+              一月 2020
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2019/02/">
+            <span class="card-archive-list-date">
+              二月 2019
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2018/02/">
+            <span class="card-archive-list-date">
+              二月 2018
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2017/03/">
+            <span class="card-archive-list-date">
+              三月 2017
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2017/01/">
+            <span class="card-archive-list-date">
+              一月 2017
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2016/01/">
+            <span class="card-archive-list-date">
+              一月 2016
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">37</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-05-17T14:24:49.475Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Ghold Lo</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.4</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
       startDelay: 300,
       typeSpeed: 150,
-      loop: false,
-      backSpeed: 50
-    })
-  } else {
-    document.getElementById("subtitle").innerHTML = '虚心使人进步，骄傲使人落后'
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  },
+  processSubtitle: (content, extraContents = []) => {
+    if (true) {
+      const sub = ["虚心使人进步，骄傲使人落后"].slice()
+
+      if (extraContents.length > 0) {
+        sub.unshift(...extraContents)
+      }
+
+      if (typeof content === 'string') {
+        sub.unshift(content)
+      } else if (Array.isArray(content)) {
+        sub.unshift(...content)
+      }
+
+      sub.length > 0 && typedJSFn.init(sub)
+    } else {
+      document.getElementById('subtitle').textContent = typeof content === 'string' ? content :
+        (Array.isArray(content) && content.length > 0 ? content[0] : '')
+    }
   }
 }
-
-if (true) {
-  if (typeof Typed === 'function') {
-    subtitleType()
-  } else {
-    getScript('https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js').then(subtitleType)
-  }
-} else {
-  subtitleType()
-}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
-POWERMODE.shake = true;
-POWERMODE.mobile = false;
-document.body.addEventListener('input', POWERMODE);
-</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  typedJSFn.processSubtitle(["虚心使人进步，骄傲使人落后"])
+}
+typedJSFn.run(subtitleType)</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
